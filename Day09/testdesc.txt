@@ -1,0 +1,9 @@
+Test 1 :
+	Takes no inputand produces a copy of itself
+	as output
+
+Test 2 :
+	Outputs a 16-digit number
+
+Test 3 :
+	Outpus the large number in the middle
