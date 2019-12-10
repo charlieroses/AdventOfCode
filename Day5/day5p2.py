@@ -8,7 +8,7 @@
 # Date : 12/7/2019
 
 if __name__ == "__main__":
-    f = open("day5input.txt")
+    f = open("day5test9.txt")
 
     # read the file and prep it for parsing
     program = f.readlines()[0].split(",")
@@ -89,7 +89,7 @@ if __name__ == "__main__":
 
             print("Enter an Int")
             value = int(input())
-    
+
             program[dest] = value
     
             i += 2 
