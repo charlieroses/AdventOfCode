@@ -5,7 +5,7 @@
 # 
 # Author : Charlie Rose
 # Language : Python3
-# Date : 12/18/2019
+# Date : 12/X/2019
 
 import math
 
