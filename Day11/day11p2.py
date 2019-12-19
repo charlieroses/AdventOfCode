@@ -5,7 +5,7 @@
 # 
 # Author : Charlie Rose
 # Language : Python3
-# Date : 12/X/2019
+# Date : 12/19/2019
 
 ################################# FUNCTIONS ###################################
 
@@ -189,12 +189,20 @@ while i < len(program):
             botFacing = changeBotFace(botFacing, outVal)
             if botFacing == 0:
                 botLoc = (botLoc[0], botLoc[1] + 1)
+                if botLoc[1] > maxY:
+                    maxY = botLoc[1]
             elif botFacing == 1:
                 botLoc = (botLoc[0] + 1, botLoc[1])
+                if botLoc[0] > maxX:
+                    maxX = botLoc[0]
             elif botFacing == 2:
                 botLoc = (botLoc[0], botLoc[1] - 1)
+                if botLoc[1] < minY:
+                    minY = botLoc[1]
             else:
                 botLoc = (botLoc[0] - 1, botLoc[1])
+                if botLoc[0] < minX:
+                    minX = botLoc[0]
         
         outputType = not outputType
 
@@ -277,4 +285,26 @@ while i < len(program):
     if opcode == 99:
         break
 
+##################################### OUTPUT ##################################
+w = abs(minX) + abs(maxX) + 1
+h = abs(minY) + abs(maxY) + 1
+
+output = ["."] * (w * h)
+
+for c in tileColor.keys():
+    cX = c[0]
+    cY = abs(c[1])
+    i = (cY * w) + cX
+
+    if tileColor[c] == 1:
+        output[i] = "#"
+    else:
+        output[i] = "."
+
+for i in range(len(output)):
+    print(output[i], end="")
+    if (i%w) == 0:
+        print()
+
+print()
 f.close()
