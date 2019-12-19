@@ -5,7 +5,7 @@
 # 
 # Author : Charlie Rose
 # Language : Python3
-# Date : 12/X/2019
+# Date : 12/19/2019
 
 import math
 
@@ -79,5 +79,62 @@ if __name__ == "__main__":
             bestA = a
             bestD = len(detections[a])
 
-    print(bestA, bestD)
+    
+    laser = bestA
+    cl = laser[0]
+    rl = laser[1]
+    astangles = {}
+
+    for a in asteroids:
+        if a == laser:
+            continue
+        
+        ca = a[0]
+        ra = a[1]
+
+        dc = ca - cl
+        dr = ra - rl
+
+        if ( dc == 0 ) and ( dr > 0 ) :
+            angle = 90
+        elif ( dc == 0 ) and ( dr < 0 ):
+            angle = 270
+        elif ( dr == 0 ) and ( dc > 0 ):
+            angle = 0
+        elif ( dr == 0 ) and ( dc < 0 ):
+            angle = 180
+        else:
+            angle = math.atan( dr/dc )
+            angle = angle * (180 / math.pi)
+            if dc < 0:
+                angle += 180
+            if angle < 0:
+                angle += 360
+
+        angle = (angle + 90) % 360
+        astangles[a] = angle
+
+    orderedAngles = sorted(astangles.items(), key = lambda kv:(kv[1], kv[0]))
+    destructOrder = [0] * len(orderedAngles)
+    
+    lp = 0
+    d = 1
+    while 0 in destructOrder:
+        if destructOrder[lp] == 0:
+            destructOrder[lp] = d
+            d += 1
+
+            n = (lp + 1) % len(orderedAngles)
+            while orderedAngles[lp][1] == orderedAngles[n][1]:
+                lp = n
+                n = (lp + 1) % len(orderedAngles)
+        else:
+            n = (lp + 1) % len(orderedAngles)
+
+        lp = n
+
+
+    i200 = destructOrder.index(200)
+    print(orderedAngles[i200])
+
     f.close()
