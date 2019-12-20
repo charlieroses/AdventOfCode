@@ -7,6 +7,8 @@
 # Language : Python3
 # Date : 12/9/2019
 
+################################# FUNCTIONS ###################################
+
 def getOperand(op, mode):
     if mode == 2:
         # Relative Mode
@@ -40,6 +42,8 @@ def editMemory(loc, val):
         increaseMemory(loc)
     program[loc] = val
 
+
+##################################### MAIN ####################################
 
 f = open("day9input.txt")
 
