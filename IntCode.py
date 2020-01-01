@@ -56,7 +56,7 @@ def editMemory(loc, val):
 #   none
 # Returns :
 #   Halt Code ( "HALT" )
-def runProgram( userInput ): 
+def runProgram(  ): 
     ip = 0
     while ip < len(program):
         longopcode = str(accessMemory(ip))
