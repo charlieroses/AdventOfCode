@@ -5,68 +5,214 @@
 # 
 # Author : Charlie Rose
 # Language : Python3
-# Date : 12/X/2019
+# Date : 12/31/2019
+
+import math
+
+def prime_factor(n):
+    f = {}
+    
+    for i in range(2, n+1):
+        while n % i == 0:
+            if i in f.keys():
+                f[i] += 1
+            else:
+                f[i] = 1
+            n = n / i
+    return f
+
 
 
 if __name__ == "__main__":
-    moonsP = [ [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+    moonsP = []
+    moonsPi = []
     moonsV = [ [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
 
     # Input and parse file
-    f = open("day12stepinput.txt", "r")
+    print("Input File:")
+    ifile = input()
+    f = open(ifile)
     
-    fin = f.readlines()
-    fin = fin[0]
-    fin = fin.split(",")
+    for l in f.readlines():
+        ls = l.split(",")
+        pos = [0,0,0]
+        posi = [0,0,0]
 
-    moonsP[0][0] = int(fin[0])
-    moonsV[0][0] = int(fin[1])
-    moonsP[0][1] = int(fin[2])
-    moonsV[0][1] = int(fin[3])
-    moonsP[0][2] = int(fin[4])
-    moonsV[0][2] = int(fin[5])
-    moonsP[1][0] = int(fin[6])
-    moonsV[1][0] = int(fin[7])
-    moonsP[1][1] = int(fin[8])
-    moonsV[1][1] = int(fin[9])
-    moonsP[1][2] = int(fin[10])
-    moonsV[1][2] = int(fin[11])
-    moonsP[2][0] = int(fin[12])
-    moonsV[2][0] = int(fin[13])
-    moonsP[2][1] = int(fin[14])
-    moonsV[2][1] = int(fin[15])
-    moonsP[2][2] = int(fin[16])
-    moonsV[2][2] = int(fin[17])
-    moonsP[3][0] = int(fin[18])
-    moonsV[3][0] = int(fin[19])
-    moonsP[3][1] = int(fin[20])
-    moonsV[3][1] = int(fin[21])
-    moonsP[3][2] = int(fin[22])
-    moonsV[3][2] = int(fin[23])
+        for i in range(len(ls)):
+            isNeg = False
+            for c in ls[i]:
+                if c.isdigit():
+                    pos[i] = (pos[i] * 10) + int(c)
+                    posi[i] = (posi[i] * 10) + int(c)
+                if c == "-":
+                    isNeg = True
+            if isNeg:
+                pos[i] = -pos[i]
+                posi[i] = -posi[i]
 
-    f.close()
+        moonsP.append(pos)
+        moonsPi.append(posi)
 
-    for m1 in range(4):
-        for m2 in range(4):
-            if m1 == m2:
-                continue
+############# First find the lowest x repeat    
+    x_rep = 0
+    time = 0
+    while True:
+        time += 1
+        for m1 in range(4):
+            for m2 in range(4):
+                if m1 == m2:
+                    continue
+                for xyz in range(3):
+                    if moonsP[m1][xyz] > moonsP[m2][xyz]:
+                        moonsV[m1][xyz] -= 1
+                    elif moonsP[m1][xyz] < moonsP[m2][xyz]:
+                        moonsV[m1][xyz] += 1
+
+        for m in range(4):
             for xyz in range(3):
-                if moonsP[m1][xyz] > moonsP[m2][xyz]:
-                    moonsV[m1][xyz] -= 1
-                elif moonsP[m1][xyz] < moonsP[m2][xyz]:
-                    moonsV[m1][xyz] += 1
-    for m1 in range(4):
-        for xyz in range(3):
-            moonsP[m1][xyz] += moonsV[m1][xyz]
- 
-    fout = ""
+                moonsP[m][xyz] += moonsV[m][xyz]
 
-    for m in range(4):
-        for c in range(3):
-            fout += str(moonsP[m][c]) + "," + str(moonsV[m][c]) + ","
+        vel0 = True
+        for m in range(4):
+            if not(moonsV[m][0] == 0):
+                vel0 = False
 
+        repeat = False
+        if vel0:
+            repeat = True
+            for m in range(4):
+                if not(moonsP[m][0] == moonsPi[m][0]):
+                    repeat = False
+
+        if repeat:
+            break
+
+    x_rep = time
+    print(x_rep)
+
+############# Reset run again
+    moonsP = []
+    moonsV = [ [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
     
-    print(moonsV)
-    f = open("day12stepinput.txt", "w")
-    f.write(fout)
+    for m in range(4):
+        pos = []
+        for c in range(3):
+            pos.append(moonsPi[m][c])
+        moonsP.append(pos)
+
+    time = 0
+############# Find the lowest y repeat
+    y_rep = 0
+    while True:
+        time += 1
+        for m1 in range(4):
+            for m2 in range(4):
+                if m1 == m2:
+                    continue
+                for xyz in range(3):
+                    if moonsP[m1][xyz] > moonsP[m2][xyz]:
+                        moonsV[m1][xyz] -= 1
+                    elif moonsP[m1][xyz] < moonsP[m2][xyz]:
+                        moonsV[m1][xyz] += 1
+
+        for m in range(4):
+            for xyz in range(3):
+                moonsP[m][xyz] += moonsV[m][xyz]
+
+        vel0 = True
+        for m in range(4):
+            if not(moonsV[m][1] == 0):
+                vel0 = False
+
+        repeat = False
+        if vel0:
+            repeat = True
+            for m in range(4):
+                if not(moonsP[m][1] == moonsPi[m][1]):
+                    repeat = False
+
+        if repeat:
+            break
+
+    y_rep = time
+    print(y_rep)
+############# Reset run again
+    moonsP = []
+    moonsV = [ [0,0,0], [0,0,0], [0,0,0], [0,0,0]]
+    
+    for m in range(4):
+        pos = []
+        for c in range(3):
+            pos.append(moonsPi[m][c])
+        moonsP.append(pos)
+
+    time = 0
+############# Find the lowest z repeat
+    z_rep = 0
+    while True:
+        time += 1
+        for m1 in range(4):
+            for m2 in range(4):
+                if m1 == m2:
+                    continue
+                for xyz in range(3):
+                    if moonsP[m1][xyz] > moonsP[m2][xyz]:
+                        moonsV[m1][xyz] -= 1
+                    elif moonsP[m1][xyz] < moonsP[m2][xyz]:
+                        moonsV[m1][xyz] += 1
+
+        for m in range(4):
+            for xyz in range(3):
+                moonsP[m][xyz] += moonsV[m][xyz]
+
+        vel0 = True
+        for m in range(4):
+            if not(moonsV[m][2] == 0):
+                vel0 = False
+
+        repeat = False
+        if vel0:
+            repeat = True
+            for m in range(4):
+                if not(moonsP[m][2] == moonsPi[m][2]):
+                    repeat = False
+
+        if repeat:
+            break
+
+    z_rep = time
+    print(z_rep)
+
+
+############# Calc LCM
+
+    x_fact = prime_factor(x_rep)
+    y_fact = prime_factor(y_rep)
+    z_fact = prime_factor(z_rep)
+
+    print(x_fact)
+    print(y_fact)
+    print(z_fact)
+
+    p_factors = list(set(x_fact.keys()) | set(y_fact.keys()) | set(z_fact.keys()))
+    p_fact = {}
+
+
+    for i in p_factors:
+        p_fact[i] = 0
+        if (i in x_fact.keys()) and (x_fact[i] > p_fact[i]):
+           p_fact[i] = x_fact[i] 
+        if (i in y_fact.keys()) and (y_fact[i] > p_fact[i]):
+           p_fact[i] = y_fact[i] 
+        if (i in z_fact.keys()) and (z_fact[i] > p_fact[i]):
+           p_fact[i] = z_fact[i] 
+
+    print(p_fact)
+    ans = 1
+    
+    for i in p_fact.keys():
+        ans = int(ans * math.pow(i, p_fact[i]))
+
+    print(ans)
+    
     f.close()
