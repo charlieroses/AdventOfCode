@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main() {
-	int i, j, n;
+	int i, j, k, l, n;
 	int vallen;
 	int *vals;
 
@@ -13,19 +13,23 @@ int main() {
 	while( scanf("%d \n", &n) != EOF ) {
 		vals[i] = n;
 
-		for(j = 0; j < i; j++) {
-			if( vals[i] + vals[j] == 2020) {
-				printf("%d %d\n", vals[i], vals[j]);
-				printf("%d\n", vals[i] * vals[j]);
-			}
-		}
-
 		i += 1;
 		if( i == vallen ) {
 			vallen *= 2;
 			vals = (int*)realloc(vals, vallen * sizeof(int));
 		}
 
+	}
+
+	for(j = 0; j < i; j++) {
+		for(k = 0; k < i; k++) {
+			for(l = 0; l < i; l++ ){
+				if( vals[j] + vals[k] + vals[l] == 2020) {
+					printf("%d %d %d \n", vals[j], vals[k], vals[l]);
+					printf("%d\n", vals[j] * vals[k] * vals[l]);
+				}
+			}
+		}
 	}
 
 	free(vals);
