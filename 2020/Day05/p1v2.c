@@ -3,26 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Gotten from
-// https://www.tutorialspoint.com/c_standard_library/c_function_qsort.htm
-int compare(const void * a, const void * b) {
-	return ( *(int*)a - *(int*)b );
-}
-
 int main() {
 	FILE *fp;
 	char buf[256];
 	int i;
 	int nR, xR, nC, xC, c, r, id, max;
-	int *ids;
-	int idlen, cid;
 
 	fp = fopen("input.txt", "r");
-
-	cid = 0;
-	idlen = 1;
-
-	ids = (int *)malloc(idlen * sizeof(int));
 
 	max = 0;
 	while( fscanf(fp, "%s\n", buf) != EOF ) {
@@ -68,28 +55,15 @@ int main() {
 
 		id = (r * 8) + c;
 
+		printf("%s %d %d %d \n", buf, r, c, id);
+
 		if( max < id ) {
 			max = id;
 		}
 
-		ids[cid] = id;
-		cid += 1;
-		if( cid == idlen) {
-			idlen *= 2;
-			ids = (int *)realloc(ids, idlen*sizeof(int));
-		}
-
 	}
 
-	qsort(ids, cid, sizeof(int), compare);
+	printf("%d\n", max);
 
-	for( i = 1; i < cid; i++) {
-		if( ids[i] - ids[i-1] > 1 ) {
-			printf("%d\n", (ids[i] - 1));
-		}
-	}
-
-	free(ids);
 	fclose(fp);
 }
-
