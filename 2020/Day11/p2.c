@@ -13,7 +13,7 @@ int main() {
 	char *board1, *board2;
 	char *input;
 	int w, h, l, m;
-	int i, iter, r, c, alive;
+	int i, iter, r, c, alive, r2, c2;
 
 	fp = fopen("input.txt", "r");
 
@@ -70,30 +70,85 @@ int main() {
 				}
 
 				if( r > 0 && c > 0 ){
-					alive += checkAlive(board1, (r - 1), (c - 1), w);
+					// Upper Left
+					r2 = r - 1;
+					c2 = c - 1;
+					while( r2 > 0 && c2 > 0 && board1[rc2i(r2,c2,w)] == '.' ) {
+						r2 -= 1;
+						c2 -= 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( r > 0 ) {
-					alive += checkAlive(board1, (r - 1), c, w);
+					// Up
+					r2 = r - 1;
+					c2 = c;
+					while( r2 > 0 && board1[rc2i(r2,c2,w)] == '.' ) {
+						r2 -= 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( r > 0 && c < (w - 1) ) {
-					alive += checkAlive(board1, (r - 1), (c + 1), w);
+					// Upper Right
+					r2 = r - 1;
+					c2 = c + 1;
+					while( r2 > 0 && c2 < w-1 && board1[rc2i(r2,c2,w)] == '.' ) {
+						r2 -= 1;
+						c2 += 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( c > 0 ){
-					alive += checkAlive(board1, r, (c - 1), w);
+					// Left
+					r2 = r;
+					c2 = c - 1;
+					while( c2 > 0 && board1[rc2i(r2,c2,w)] == '.' ) {
+						c2 -= 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( c < (w - 1) ) {
-					alive += checkAlive(board1, r, (c + 1), w);
+					// Right
+					r2 = r;
+					c2 = c + 1;
+					while( c2 < w-1 && board1[rc2i(r2,c2,w)] == '.' ) {
+						c2 += 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( r < (h - 1) && c > 0 ) {
-					alive += checkAlive(board1, (r + 1), (c - 1), w);
+					// Lower Left
+					r2 = r + 1;
+					c2 = c - 1;
+					while( r2 < h-1 && c2 > 0 && board1[rc2i(r2,c2,w)] == '.' ) {
+						r2 += 1;
+						c2 -= 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( r < (h - 1) ) {
-					alive += checkAlive(board1, (r + 1), c, w);
+					// Down
+					r2 = r + 1;
+					c2  = c;
+					while( r2 < h-1 && board1[rc2i(r2,c2,w)] == '.' ) {
+						r2 += 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 				if( r < (h - 1)  && c < (w - 1) ) {
-					alive += checkAlive(board1, (r + 1), (c + 1), w);
+					// Lower Right
+					r2 = r + 1;
+					c2 = c + 1;
+					while( r2 < h-1 && c2 < w-1 && board1[rc2i(r2,c2,w)] == '.' ) {
+						r2 += 1;
+						c2 += 1;
+					}
+					alive += checkAlive(board1, r2, c2, w);
 				}
 
+				if( r == 5 && c == 8 ) {
+					printf("Alive: %d\n", alive);
+				}
 
 				if( board1[rc2i(r,c,w)]  == 'L' ) {
 					if( alive == 0 ) {
@@ -104,7 +159,7 @@ int main() {
 					}
 				}
 				else {
-					if( alive < 4 ) {
+					if( alive < 5 ) {
 						board2[rc2i(r,c,w)] = '#';
 					}
 					else {
@@ -115,6 +170,9 @@ int main() {
 
 			}
 		}
+
+		printBoard(board1, w, l);
+		printf("\n");
 
 		if( sameBoard( board1, board2, l) ){
 			break;
