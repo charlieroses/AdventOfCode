@@ -12,10 +12,10 @@ int main() {
 	FILE *fp;
 	char buf[256];
 	char *mask;
-	int i, j, obmL;
+	int i, j;
 	int memM, memL;
 	long *memLoc, *memVal;
-	long n, memV, t, memC, nmemC, v;
+	long n, memV, memC, nmemC, v, t;
 
 	memL = 0;
 	memM = 1;
@@ -23,8 +23,7 @@ int main() {
 	memVal= malloc(memM * sizeof(long));
 
 	bmL = 1;
-	obmL = 1;
-	bitmaps = malloc( sizeof(char*) );
+	bitmaps = malloc(2000 * sizeof(char*) );
 
 	mask = malloc(36 * sizeof(char));
 
@@ -36,7 +35,6 @@ int main() {
 
 			sscanf(buf, "mask = %s\n", mask);
 
-			obmL = bmL;
 			bmL = 1;
 			for( i = 0; i < 36; i++) {
 				if (mask[i] == 'X') {
@@ -44,11 +42,6 @@ int main() {
 				}
 			}
 
-			if( bmL > obmL ) {
-				fprintf(stderr, "No seg fault here %d\n", bmL);
-				bitmaps = realloc(bitmaps, bmL * sizeof(char*));
-				fprintf(stderr, "No seg fault here either\n");
-			}
 			bi = 0;
 		}
 		else {
@@ -66,7 +59,7 @@ int main() {
 
 			fillBitMaps(mask, 0);
 
-			for( j = 0; j < bmL; j++) {
+			for( j = 0; j < bi; j++) {
 				v = 0;
 				n = 1;
 				for(i = 35; i >= 0; i--) {
@@ -137,7 +130,6 @@ int fillBitMaps(char* mask, int i) {
 			mask[i] = '1';
 			fillBitMaps(c, i + 1);
 			fillBitMaps(mask, i + 1);
-			free(c);
 		}
 	}
 }
