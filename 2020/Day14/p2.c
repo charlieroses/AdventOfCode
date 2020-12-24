@@ -12,7 +12,7 @@ int main() {
 	FILE *fp;
 	char buf[256];
 	char *mask;
-	int i, j;
+	int i, j, obmL;
 	int memM, memL;
 	long *memLoc, *memVal;
 	long n, memV, t, memC, nmemC, v;
@@ -22,11 +22,13 @@ int main() {
 	memLoc = malloc(memM * sizeof(long));
 	memVal= malloc(memM * sizeof(long));
 
-	bitmaps = malloc( 1 );
+	bmL = 1;
+	obmL = 1;
+	bitmaps = malloc( sizeof(char*) );
 
 	mask = malloc(36 * sizeof(char));
 
-	fp = fopen("test3.txt", "r");
+	fp = fopen("input.txt", "r");
 
 	while( fgets(buf, 256, fp) != NULL ) {
 		if( buf[1] == 'a' ){
@@ -34,6 +36,7 @@ int main() {
 
 			sscanf(buf, "mask = %s\n", mask);
 
+			obmL = bmL;
 			bmL = 1;
 			for( i = 0; i < 36; i++) {
 				if (mask[i] == 'X') {
@@ -41,13 +44,27 @@ int main() {
 				}
 			}
 
-			bitmaps = realloc(bitmaps, bmL * sizeof(char*));
+			if( bmL > obmL ) {
+				fprintf(stderr, "No seg fault here %d\n", bmL);
+				bitmaps = realloc(bitmaps, bmL * sizeof(char*));
+				fprintf(stderr, "No seg fault here either\n");
+			}
 			bi = 0;
-			fillBitMaps(mask, 0);
 		}
 		else {
 			// MEM LINE
 			sscanf(buf, "mem[%ld] = %ld\n", &memC, &memV);
+
+			n = 1;
+			for( i = 35; i >= 0; i-- ) {
+				t = memC & n;
+				if( t == n && mask[i] == '0') {
+					mask[i] = '1';
+				}
+				n *= 2;
+			}
+
+			fillBitMaps(mask, 0);
 
 			for( j = 0; j < bmL; j++) {
 				v = 0;
@@ -57,13 +74,9 @@ int main() {
 					n *= 2;
 				}
 
-				nmemC = memC | v;
-				printf("%ld %s %ld %ld\n", memC, bitmaps[j], nmemC, v);
-
-
-				i = find(memC, memLoc, memL);
+				i = find(v, memLoc, memL);
 				if( i == -1 ) {
-					memLoc[memL] = memC;
+					memLoc[memL] = v;
 					memVal[memL] = memV;
 
 					memL += 1;
@@ -91,8 +104,8 @@ int main() {
 	fclose(fp);
 	free(memLoc);
 	free(memVal);
-	free(bitmaps);
 	free(mask);
+	free(bitmaps);
 }
 
 int find(long val, long arr[], int arrL) {
@@ -124,6 +137,7 @@ int fillBitMaps(char* mask, int i) {
 			mask[i] = '1';
 			fillBitMaps(c, i + 1);
 			fillBitMaps(mask, i + 1);
+			free(c);
 		}
 	}
 }
